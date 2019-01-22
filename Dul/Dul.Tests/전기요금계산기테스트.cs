@@ -78,5 +78,17 @@ namespace Dul.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void 일반용_을_전력량요금_테스트()
+        {
+            var _전력량 = 1M;
+
+            var expected = 78.5M * _전력량;
+
+            var actual = _전기요금계산기.요금(계약종별.일반용, 압력분류.고압B, _전력량, 요금분류.을, 선택분류.선택II, _월: 3, _시: 12).전력량요금;
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

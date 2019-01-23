@@ -90,5 +90,17 @@ namespace Dul.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void 산업용_을_고압B_선택III_여름철_중간부하_전력량요금_테스트()
+        {
+            var _전력량 = 1M;
+
+            var expected = 106.8M * _전력량;
+
+            var actual = _전기요금계산기.요금(계약종별.산업용, 압력분류.고압B, _전력량, 요금분류.을, 선택분류.선택III, _월: 7, _시: 9).전력량요금;
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

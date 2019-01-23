@@ -32,8 +32,9 @@ namespace Dul.Tests
         [TestMethod]
         public void 주택용_저압_전력량요금_테스트()
         {
-            var _전력량 = 500M;
-            var expected = 280.6M * _전력량;
+            decimal _전력량 = 500M;
+            //var expected = 280.6M * _전력량;
+            decimal expected = (200M * 93.3m) + (200M * 187.9m) + (_전력량 - 400M) * 280.6M;
             var actual = _전기요금계산기.요금(계약종별.주택용, 압력분류.저압, _전력량).전력량요금;
             Assert.AreEqual(expected, actual);
         }
@@ -49,8 +50,8 @@ namespace Dul.Tests
         [TestMethod]
         public void 주택용_고압_전력량요금_테스트()
         {
-            var _전력량 = 600M;
-            var expected = 215.6M * _전력량;
+            decimal _전력량 = 500M;
+            decimal expected = (200M * 78.3m) + (200M * 147.3m) + (_전력량 - 400M) * 215.6M;
             var actual = _전기요금계산기.요금(계약종별.주택용, 압력분류.고압, _전력량).전력량요금;
             Assert.AreEqual(expected, actual);
         }

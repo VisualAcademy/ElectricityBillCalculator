@@ -102,5 +102,17 @@ namespace Dul.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void 전기요금계산기_클래스를_사용하여_특정_조건에_맞는_기본요금_또는_전력량요금()
+        {
+            전기요금계산기 my = new 전기요금계산기();
+
+            decimal 킬로와트시 = 115.9M * 1M; 
+
+            decimal _전력량요금 = my.요금(계약종별.일반용, 압력분류.고압A, 1, 요금분류.갑I, 선택분류.선택I, 6, 9).전력량요금;
+
+            Assert.AreEqual(킬로와트시, _전력량요금);
+        }
     }
 }

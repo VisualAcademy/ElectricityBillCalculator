@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dul
 {
@@ -1767,6 +1769,53 @@ namespace Dul
                     break;
             }
             return _요금;
+        }
+
+        /// <summary>
+        /// 1부터 8760시간의 전기요금(kW) 정보가 넘어오면 그에 해당하는 월단위 전기 요금(기본료+사용량)을 반환
+        /// </summary>
+        /// <param name="pairs">8760시간 전기 사용량: (1, 0.23)~(8760, 0.35)</param>
+        /// <returns>월별 요금 리스트</returns>
+        public Dictionary<int, double> 월별요금(Dictionary<int, double> pairs, 계약종별 _계약종별, 압력분류 _압력분류, 요금분류 _요금분류, 선택분류 _선택분류)
+        {
+            Dictionary<int, double> r = new Dictionary<int, double>();
+
+            for (int i = 1; i <= 12; i++)
+            {
+                if (_계약종별 == 계약종별.주택용)
+                {
+                    // 한달 단위 계산
+                    double 전기사용량 = pairs.Where(x => GetDateTimeFromYearlyHourNumber(x.Key).Month == i).Sum(x => x.Value);
+                    var _요금 = 요금(계약종별.주택용, _압력분류, (decimal)전기사용량);
+                    r.Add(i, Convert.ToDouble(_요금.기본요금 + _요금.전력량요금));
+                }
+                else
+                {
+                    // 시간 단위 계산
+                    double 전기사용량 = pairs.Where(x => GetDateTimeFromYearlyHourNumber(x.Key).Month == i).Sum(x => x.Value);
+                    var _기본요금 = 요금(_계약종별, _압력분류, (decimal)전기사용량, _요금분류, _선택분류, i).기본요금;
+
+                    var 각월데이터 = pairs.Where(p => GetDateTimeFromYearlyHourNumber(p.Key).Month == i); // 1월달 => 31*24
+                    double _요금 = 0.0;
+                    foreach (var _각월데이터 in 각월데이터)
+                    {
+                        int _시 = GetDateTimeFromYearlyHourNumber(_각월데이터.Key).Hour;
+                        _요금 += Convert.ToDouble(요금(_계약종별, _압력분류, (decimal)_각월데이터.Value, _요금분류, _선택분류, i, _시).전력량요금);
+                    }
+
+                    r.Add(i, Convert.ToDouble((double)_기본요금 + _요금));
+                }
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        /// 1부터 8760까지의 정수를 입력받아 해당 날짜를 반환해주는 함수: Dul.DateTimeUtility 클래스 참조
+        /// </summary>
+        private static DateTime GetDateTimeFromYearlyHourNumber(int number)
+        {
+            return (new DateTime(2019, 1, 1, 0, 0, 0)).AddHours(--number);
         }
     }
 }

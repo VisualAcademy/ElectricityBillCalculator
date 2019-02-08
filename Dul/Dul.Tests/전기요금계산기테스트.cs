@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace Dul.Tests
 {
@@ -114,6 +115,19 @@ namespace Dul.Tests
             decimal _전력량요금 = my.요금(계약종별.일반용, 압력분류.고압A, 1, 요금분류.갑I, 선택분류.선택I, 6, 9).전력량요금;
 
             Assert.AreEqual(킬로와트시, _전력량요금);
+        }
+
+        [TestMethod]
+        public void 전기요금계산기_월별요금_메서드_주택용_테스트()
+        {
+            전기요금계산기 calc = new 전기요금계산기();
+
+            Dictionary<int, double> pairs = new Dictionary<int, double>();
+            pairs.Add(1, 100); 
+
+            var actual = calc.월별요금(pairs, 계약종별.주택용, 압력분류.고압, 요금분류.갑I, 선택분류.A);
+
+            Assert.AreEqual(8560, actual[1]);
         }
     }
 }
